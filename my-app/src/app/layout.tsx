@@ -18,7 +18,7 @@ export default function RootLayout({
         <main className="flex-1">{children}</main>
 
         <footer className="fixed bottom-0 left-0 w-full border-t z-50">
-          <div className="flex justify-center space-x-5 p-4">
+          <div className="flex justify-center space-x-10 p-4">
             <Image
             src="/Icon_home.svg"
             alt="home icon"
