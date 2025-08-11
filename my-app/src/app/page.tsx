@@ -10,20 +10,41 @@ type Post = {
   likes: number;
 };
 
+// 日付表示ユーティリティ（今日 / 昨日 / YYYY/MM/DD）
+const formatPostDate = (iso: string): string => {
+  if (!iso) return '';
+  const d = new Date(iso);
+  const now = new Date();
+
+  const makeMidnight = (dt: Date) =>
+    new Date(dt.getFullYear(), dt.getMonth(), dt.getDate());
+  const today = makeMidnight(now);
+  const yesterday = new Date(today.getTime() - 86400000);
+  const target = makeMidnight(d);
+
+  if (target.getTime() === today.getTime()) return '今日';
+  if (target.getTime() === yesterday.getTime()) return '昨日';
+
+  const y = d.getFullYear();
+  const m = String(d.getMonth() + 1).padStart(2, '0');
+  const day = String(d.getDate()).padStart(2, '0');
+  return `${y}/${m}/${day}`;
+};
+
 export default function Page() {
   const [posts, setPosts] = useState<Post[]>([
     {
       id: 1,
       user: 'Alice',
       content: '最初の投稿です！',
-      createdAt: new Date().toLocaleString(),
+      createdAt: new Date().toISOString(),
       likes: 2,
     },
     {
       id: 2,
       user: 'Bob',
       content: 'こんにちは世界',
-      createdAt: new Date().toLocaleString(),
+      createdAt: new Date().toISOString(),
       likes: 0,
     },
   ]);
@@ -37,7 +58,7 @@ export default function Page() {
         id: Date.now(),
         user: 'You',
         content: trimmed,
-        createdAt: new Date().toLocaleString(),
+        createdAt: new Date().toISOString(),
         likes: 0,
       },
       ...p,
@@ -55,36 +76,6 @@ export default function Page() {
 
   return (
     <div style={{ maxWidth: 640, margin: '0 auto', fontFamily: 'sans-serif', padding: 16 }}>
-      {/* 追加: 投稿フォーム */}
-      <div style={{ border: '1px solid #ddd', padding: 12, borderRadius: 8, marginTop: 24 }}>
-        <textarea
-          value={newContent}
-          onChange={e => setNewContent(e.target.value)}
-          placeholder="いまどうしてる？"
-          rows={3}
-          style={{ width: '100%', resize: 'vertical', padding: 8 }}
-        />
-        <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: 8 }}>
-          <span style={{ fontSize: 12, color: '#666' }}>
-            {newContent.trim().length}/140
-          </span>
-          <button
-            onClick={addPost}
-            disabled={!newContent.trim() || newContent.trim().length > 140}
-            style={{
-              background: '#2563eb',
-              color: '#fff',
-              border: 'none',
-              padding: '6px 16px',
-              borderRadius: 4,
-              cursor: 'pointer',
-              opacity: !newContent.trim() || newContent.trim().length > 140 ? 0.5 : 1,
-            }}
-          >
-            投稿
-          </button>
-        </div>
-      </div>
       {/* 追加: タイムライン */}
       <ul style={{ listStyle: 'none', padding: 0, marginTop: 24, display: 'grid', gap: 12 }}>
         {posts.map(post => (
@@ -97,11 +88,11 @@ export default function Page() {
               background: '#fff',
             }}
           >
-            <div style={{ fontWeight: 600 }}>{post.user}</div>
             <div style={{ whiteSpace: 'pre-wrap', marginTop: 4 }}>{post.content}</div>
             <div style={{ fontSize: 12, color: '#666', marginTop: 6 }}>
-              {post.createdAt}
+              {formatPostDate(post.createdAt)}
             </div>
+            <div style={{ fontWeight: 600 }}>{post.user}</div>
             <button
               onClick={() => likePost(post.id)}
               style={{
