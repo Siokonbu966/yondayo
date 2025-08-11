@@ -11,7 +11,7 @@ export default function RootLayout({
     <html lang="ja">
       <body style={{ backgroundColor: '#ffeee2'}}>
 
-        <header className="grid grid-cols-3 items-center border-b px-4">
+        <header className="fixed top-0 left-0 w-full z-50 grid grid-cols-3 items-center border-b px-4 h-16 bg-[#ffeee2]">
           <h2 className="col-start-2 text-center p-4 text-2xl font-bold">よんだよ</h2>
           <div className="col-start-3 justify-self-end w-12 h-12">
             <svg viewBox="0 0 24 24" aria-hidden="true">
@@ -20,7 +20,7 @@ export default function RootLayout({
           </div>
         </header>
 
-        <main className="flex-1">{children}</main>
+        <main className="flex-1 pt-16">{children}</main>
 
         <footer className="fixed bottom-0 left-0 w-full border-t z-50">
           <div className="flex justify-center space-x-10 p-4">
